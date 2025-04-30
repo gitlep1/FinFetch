@@ -12,7 +12,12 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 5173;
 
-const allowedOrigins = ["http://localhost:5173", "http://localhost:4000"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://fin-fetch.vercel.app",
+  "http://localhost:4000",
+  "https://fin-fetch-api.vercel.app",
+];
 
 app.use(
   cors({
@@ -69,7 +74,7 @@ app.get("/", (req, res) => {
   `);
 });
 
-app.get("*", (req, res) => {
+app.get(/(.*)/, (req, res) => {
   res
     .status(404)
     .send(
@@ -79,10 +84,8 @@ app.get("*", (req, res) => {
 
 const server = http.createServer(app);
 
-if (process.env.NODE_ENV !== "test") {
-  server.listen(PORT, () => {
-    console.log(`FinFetch is running on port ${PORT}`);
-  });
-}
+server.listen(PORT, () => {
+  console.log(`FinFetch is running on port ${PORT}`);
+});
 
 module.exports = app;

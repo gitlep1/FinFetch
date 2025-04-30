@@ -41,10 +41,9 @@ const createTransporter = async () => {
 
     return transporter;
   } catch (error) {
-    console.error(
-      "❌ createTransporter -> Failed to create transporter:",
-      error.message
-    );
+    console.error("❌ createTransporter -> Failed to create transporter:", {
+      ERROR: error.message,
+    });
     return null;
   }
 };
