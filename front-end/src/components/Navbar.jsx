@@ -99,7 +99,7 @@ export const Navbar = () => {
         )}
       </nav>
       <div>
-        <Breadcrumb className="flex justify-start items-center">
+        <Breadcrumb className="flex justify-start items-center ml-1">
           <Breadcrumb.Item
             active={activeHome}
             onClick={() => {
