@@ -23,7 +23,10 @@ export const Homepage = () => {
   return (
     <div className="flex flex-col align-center justify-center h-[50dvh] w-50 mx-auto my-0">
       {userData !== null && JSON.parse(userData).profileimg !== "" && (
-        <Image src={JSON.parse(userData).profileimg} className="!w-25" />
+        <Image
+          src={JSON.parse(userData).profileimg}
+          className="w-25 align-self-center"
+        />
       )}
       <h1 className="!text-5xl">
         {timeOfDay}, {userData !== null ? JSON.parse(userData).username : null}

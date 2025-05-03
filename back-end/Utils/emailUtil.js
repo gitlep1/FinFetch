@@ -18,7 +18,9 @@ const createTransporter = async () => {
   try {
     const accessTokenObj = await oAuth2Client.getAccessToken();
     if (!accessTokenObj || !accessTokenObj.token) {
-      throw new Error("createTransporter -> Failed to retrieve access token");
+      throw new Error(
+        "❌ createTransporter -> Failed to retrieve access token"
+      );
     }
 
     console.log("✅ createTransporter -> Access Token Retrieved");
@@ -42,7 +44,7 @@ const createTransporter = async () => {
     return transporter;
   } catch (error) {
     console.error("❌ createTransporter -> Failed to create transporter:", {
-      ERROR: error.message,
+      ERROR_TITLE: error.message,
     });
     return null;
   }

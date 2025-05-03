@@ -93,7 +93,7 @@ export const Signin = ({ handleSignUpClick, handleAuthModalClose }) => {
     setTimeout(() => {
       setAuthUser(userData.payload);
       setAuthToken(userData.token);
-      navigate("/");
+      window.location.reload();
     }, 4100);
     return clearFields();
   };
