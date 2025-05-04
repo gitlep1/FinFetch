@@ -71,7 +71,8 @@ export const Signup = ({ handleSignUpClick, handleAuthModalClose }) => {
         });
       })
       .catch((err) => {
-        const error = err.response.data.error;
+        const error = err;
+        console.log({ error });
 
         return toast.error(
           error === "Email already exists."
