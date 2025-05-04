@@ -1,16 +1,11 @@
-const fs = require("fs");
-const path = require("path");
-
 const { google } = require("googleapis");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const EMAIL = process.env.GMAIL_EMAIL;
-
-const TOKEN_PATH = path.join(__dirname, "temp_tokens_for_setup.json");
 
 const REDIRECT_URI =
   process.env.REDIRECT_URI || "http://localhost:4000/oauth/oauth2callback";
@@ -21,20 +16,16 @@ const oAuth2Client = new google.auth.OAuth2(
   REDIRECT_URI
 );
 
-const tokens = JSON.parse(fs.readFileSync(TOKEN_PATH, "utf8"));
-console.log("✅ Tokens loaded from file:", tokens);
-oAuth2Client.setCredentials(tokens);
-
-// if (REFRESH_TOKEN) {
-//   oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
-//   console.log(
-//     "✅ oAuth2Client initialized with refresh token from environment variables."
-//   );
-// } else {
-//   console.warn(
-//     "⚠️ GOOGLE_REFRESH_TOKEN not found in environment variables. OAuth flow needs to be performed."
-//   );
-// }
+if (REFRESH_TOKEN) {
+  oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+  console.log(
+    "✅ oAuth2Client initialized with refresh token from environment variables."
+  );
+} else {
+  console.warn(
+    "⚠️ REFRESH_TOKEN not found in environment variables. OAuth flow needs to be performed."
+  );
+}
 
 const createTransporter = async () => {
   try {
@@ -47,8 +38,6 @@ const createTransporter = async () => {
     }
 
     const accessToken = accessTokenResponse.token;
-    console.log("✅ Access Token:", accessToken);
-
     console.log("✅ createTransporter -> Access Token Retrieved/Refreshed");
 
     const transporter = nodemailer.createTransport({
@@ -63,8 +52,6 @@ const createTransporter = async () => {
         accessToken: accessToken,
       },
     });
-
-    console.log("======= transporter:", transporter);
 
     await transporter.verify();
     console.log("✅ Transporter successfully verified");

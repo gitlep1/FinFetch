@@ -5,8 +5,8 @@ require("dotenv").config();
 const fs = require("fs").promises;
 const path = require("path");
 
-const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI =
   process.env.REDIRECT_URI || "http://localhost:4000/oauth/oauth2callback";
 
@@ -16,7 +16,10 @@ const oAuth2Client = new google.auth.OAuth2(
   REDIRECT_URI
 );
 
-const SCOPES = ["https://www.googleapis.com/auth/gmail.send"];
+const SCOPES = [
+  "https://mail.google.com",
+  "https://www.googleapis.com/auth/gmail.send",
+];
 
 const TEMP_TOKEN_PATH = path.join(__dirname, "temp_tokens_for_setup.json");
 
