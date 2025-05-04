@@ -6,6 +6,7 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const EMAIL = process.env.GMAIL_EMAIL;
+const PW = process.env.GMAIL_PW;
 
 const oAuth2Client = new google.auth.OAuth2(
   CLIENT_ID,
@@ -23,7 +24,10 @@ const createTransporter = async () => {
       );
     }
 
-    console.log("✅ createTransporter -> Access Token Retrieved");
+    console.log(
+      "✅ createTransporter -> Access Token Retrieved",
+      accessTokenObj
+    );
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -36,10 +40,18 @@ const createTransporter = async () => {
         refreshToken: REFRESH_TOKEN,
         accessToken: accessTokenObj.token,
       },
+
+      // host: "smtp.gmail.com",
+      // port: 465,
+      // secure: true,
+      // auth: {
+      //   user: EMAIL,
+      //   pass: PW,
+      // },
     });
 
     await transporter.verify();
-    console.log("✅ Transporter successfully verified");
+    console.log("✅ Transporter successfully verified", transporter);
 
     return transporter;
   } catch (error) {
