@@ -6,7 +6,6 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const EMAIL = process.env.GMAIL_EMAIL;
-const PW = process.env.GMAIL_PW;
 
 const REDIRECT_URI =
   process.env.REDIRECT_URI || "http://localhost:4000/oauth/oauth2callback";
@@ -63,7 +62,7 @@ const createTransporter = async () => {
     });
 
     await transporter.verify();
-    console.log("✅ Transporter successfully verified", transporter);
+    console.log("✅ Transporter successfully verified");
 
     return transporter;
   } catch (error) {
