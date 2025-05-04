@@ -1,8 +1,9 @@
 {
-  "routes": [
+  "redirects": [
     {
       "source": "/(.*)", 
-      "destination": "front-end/index.html"
+      "destination": "front-end/index.html",
+      "statusCode": 200
     }
   ]
 }
