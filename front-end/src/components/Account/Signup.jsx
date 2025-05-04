@@ -71,9 +71,7 @@ export const Signup = ({ handleSignUpClick, handleAuthModalClose }) => {
         });
       })
       .catch((err) => {
-        const error = err;
-        console.log({ error });
-
+        const error = err.response.data.error;
         return toast.error(
           error === "Email already exists."
             ? "ERROR: Email already taken."
