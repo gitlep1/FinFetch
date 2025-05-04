@@ -8,26 +8,38 @@ const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const EMAIL = process.env.GMAIL_EMAIL;
 const PW = process.env.GMAIL_PW;
 
+const REDIRECT_URI =
+  process.env.REDIRECT_URI || "http://localhost:4000/oauth/oauth2callback";
+
 const oAuth2Client = new google.auth.OAuth2(
   CLIENT_ID,
   CLIENT_SECRET,
-  "https://developers.google.com/oauthplayground"
+  REDIRECT_URI
 );
-oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+if (REFRESH_TOKEN) {
+  oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+  console.log(
+    "✅ oAuth2Client initialized with refresh token from environment variables."
+  );
+} else {
+  console.warn(
+    "⚠️ REFRESH_TOKEN not found in environment variables. OAuth flow needs to be performed."
+  );
+}
 
 const createTransporter = async () => {
   try {
-    const accessTokenObj = await oAuth2Client.getAccessToken();
-    if (!accessTokenObj || !accessTokenObj.token) {
+    const accessTokenResponse = await oAuth2Client.getAccessToken();
+
+    if (!accessTokenResponse || !accessTokenResponse.token) {
       throw new Error(
         "❌ createTransporter -> Failed to retrieve access token"
       );
     }
 
-    console.log(
-      "✅ createTransporter -> Access Token Retrieved",
-      accessTokenObj
-    );
+    const accessToken = accessTokenResponse.token;
+    console.log("✅ createTransporter -> Access Token Retrieved/Refreshed");
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -38,7 +50,7 @@ const createTransporter = async () => {
         clientId: CLIENT_ID,
         clientSecret: CLIENT_SECRET,
         refreshToken: REFRESH_TOKEN,
-        accessToken: accessTokenObj.token,
+        accessToken: accessToken,
       },
 
       // host: "smtp.gmail.com",
@@ -57,6 +69,7 @@ const createTransporter = async () => {
   } catch (error) {
     console.error("❌ createTransporter -> Failed to create transporter:", {
       ERROR_TITLE: error.message,
+      error: error,
     });
     return null;
   }

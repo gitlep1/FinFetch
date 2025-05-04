@@ -1,4 +1,6 @@
 const express = require("express");
+const app = express();
+require("dotenv").config();
 const cors = require("cors");
 const http = require("http");
 
@@ -6,10 +8,8 @@ const usersController = require("./controllers/usersController");
 const emailAuthController = require("./controllers/emailAuthController");
 const imageUploaderController = require("./controllers/imageUploaderController");
 const newsController = require("./controllers/newsController");
+const oauthRouter = require("./Utils/oauthRoutes");
 
-require("dotenv").config();
-
-const app = express();
 const PORT = process.env.PORT || 5173;
 
 const allowedOrigins = [
@@ -35,6 +35,13 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+if (process.env.ALLOW_OAUTH_SETUP === "true") {
+  console.log("✅ OAuth setup routes are ENABLED.");
+  app.use("/oauth", oauthRouter);
+} else {
+  console.log("OAuth setup routes are DISABLED.");
+}
+
 // === Account Routes === \\
 app.use("/email", emailAuthController);
 app.use("/users", usersController);
@@ -52,7 +59,7 @@ app.post("/login", (req, res) => {
   const adminPassword = process.env.ADMIN_PASSWORD;
 
   if (username === adminUsername && password === adminPassword) {
-    res.send("Login successful! Welcome, Admin.");
+    res.send("✅ Login successful! Welcome, Admin.");
   } else {
     res.status(401).send("Invalid username or password.");
   }
@@ -85,7 +92,13 @@ app.get(/(.*)/, (req, res) => {
 const server = http.createServer(app);
 
 server.listen(PORT, () => {
-  console.log(`FinFetch is running on port ${PORT}`);
+  console.log(`✅ FinFetch is running on port ${PORT}`);
+
+  if (process.env.ALLOW_OAUTH_SETUP === "true") {
+    console.log(
+      `Maps to http://localhost:${PORT}/oauth/authorize to perform initial Google OAuth authorization.`
+    );
+  }
 });
 
 module.exports = app;
