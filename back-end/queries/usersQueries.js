@@ -30,13 +30,12 @@ const createUser = async (newUserData) => {
 
 const updateUser = async (id, updatedUserData) => {
   const query =
-    "UPDATE users SET profileimg = $1, username = $2, password = $3, email = $4, theme = $5, updated_at = NOW(), last_online = $6 WHERE id = $7 RETURNING id, profileimg, username, theme, last_online";
+    "UPDATE users SET profileimg = $1, username = $2, password = $3, email = $4, updated_at = NOW(), last_online = $5 WHERE id = $6 RETURNING id, profileimg, username, email, last_online";
   const updateUser = await db.oneOrNone(query, [
     updatedUserData.profileimg,
     updatedUserData.username,
     updatedUserData.password,
     updatedUserData.email,
-    updatedUserData.theme,
     updatedUserData.last_online,
     id,
   ]);

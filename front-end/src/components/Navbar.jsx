@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Image, Breadcrumb, Button, Modal, Form } from "react-bootstrap";
+import { IoIosSunny } from "react-icons/io";
+import { FaMoon } from "react-icons/fa";
 
 import { GetCookies } from "../CustomFunctions/HandleCookies";
+import { themeContext } from "../CustomContexts/Contexts";
 
 import Leon from "../assets/images/Leon.png";
 
@@ -16,9 +19,12 @@ export const Navbar = () => {
 
   const userData = GetCookies("authUser") || null;
 
+  const { themeState, setThemeState } = useContext(themeContext);
+
   const [activeHome, setActiveHome] = useState(true);
   const [activeDashboard, setActiveDashboard] = useState(false);
   const [activeAbout, setActiveAbout] = useState(false);
+  const [activeAccountSettings, setActiveAccountSettings] = useState(false);
 
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showSignoutModal, setShowSignoutModal] = useState(false);
@@ -29,14 +35,22 @@ export const Navbar = () => {
       setActiveHome(true);
       setActiveDashboard(false);
       setActiveAbout(false);
+      setActiveAccountSettings(false);
     } else if (location.pathname === "/dashboard") {
       setActiveHome(false);
       setActiveDashboard(true);
       setActiveAbout(false);
+      setActiveAccountSettings(false);
     } else if (location.pathname === "/about") {
       setActiveHome(false);
       setActiveDashboard(false);
       setActiveAbout(true);
+      setActiveAccountSettings(false);
+    } else if (location.pathname === "/account-settings") {
+      setActiveHome(false);
+      setActiveDashboard(false);
+      setActiveAbout(false);
+      setActiveAccountSettings(true);
     }
   }, [location]);
 
@@ -83,19 +97,34 @@ export const Navbar = () => {
 
   return (
     <div>
-      <nav className="w-full h-20 bg-gray-900 flex justify-between items-center px-10 nav-container">
+      <nav
+        className={`
+          w-full grid grid-cols-1 place-items-center 
+          gap-y-3 py-3 px-6
+          sm:flex sm:flex-row sm:justify-between sm:items-center sm:h-20 sm:px-4
+          md:flex md:flex-row md:justify-between md:items-center md:h-20 md:px-10
+          ${
+            themeState === "dark"
+              ? "bg-gray-900 text-white"
+              : "bg-white text-black"
+          }
+          `}
+      >
         <div className="flex items-center">
           <Image src={Leon} alt="Leon-logo" className="w-10 h-10" />
-          <h1 className="text-2xl font-bold text-white">FinFetch</h1>
+          <h1 className="text-2xl font-bold">FinFetch</h1>
         </div>
         {userData ? (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center sm:space-x-2">
             <Image
               src={userData.profileimg}
               alt="User Avatar"
-              className="w-10 h-10 rounded-full"
+              className="w-10 h-10 rounded-full cursor-pointer"
+              onClick={() => {
+                navigate("/account-settings");
+              }}
             />
-            <p className="text-white mt-2">{userData.username}</p>
+            <p className="mt-2">{userData.username}</p>
             <Button variant="danger" onClick={handleSignoutModalShow}>
               Logout
             </Button>
@@ -106,7 +135,11 @@ export const Navbar = () => {
           </Button>
         )}
       </nav>
-      <div>
+      <div
+        className={`flex justify-between ${
+          themeState === "dark" ? "bg-gray-900" : "bg-white"
+        }`}
+      >
         <Breadcrumb className="flex justify-start items-center ml-2">
           <Breadcrumb.Item
             active={activeHome}
@@ -114,7 +147,19 @@ export const Navbar = () => {
               navigate("/");
             }}
           >
-            Home
+            <span
+              className={`${
+                themeState === "dark"
+                  ? activeHome
+                    ? "text-red-600"
+                    : null
+                  : activeHome
+                  ? "text-green-600"
+                  : null
+              }`}
+            >
+              Home
+            </span>
           </Breadcrumb.Item>
           <Breadcrumb.Item
             active={activeDashboard}
@@ -122,7 +167,39 @@ export const Navbar = () => {
               navigate("/dashboard");
             }}
           >
-            Dashboard
+            <span
+              className={`${
+                themeState === "dark"
+                  ? activeDashboard
+                    ? "text-red-600"
+                    : null
+                  : activeDashboard
+                  ? "text-green-600"
+                  : null
+              }`}
+            >
+              Dashboard
+            </span>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item
+            active={activeAccountSettings}
+            onClick={() => {
+              navigate("/account-settings");
+            }}
+          >
+            <span
+              className={`${
+                themeState === "dark"
+                  ? activeAccountSettings
+                    ? "text-red-600"
+                    : null
+                  : activeAccountSettings
+                  ? "text-green-600"
+                  : null
+              }`}
+            >
+              Account Settings
+            </span>
           </Breadcrumb.Item>
           <Breadcrumb.Item
             active={activeAbout}
@@ -130,9 +207,43 @@ export const Navbar = () => {
               navigate("/about");
             }}
           >
-            About
+            <span
+              className={`${
+                themeState === "dark"
+                  ? activeAbout
+                    ? "text-red-600"
+                    : null
+                  : activeAbout
+                  ? "text-green-600"
+                  : null
+              }`}
+            >
+              About
+            </span>
           </Breadcrumb.Item>
         </Breadcrumb>
+        <div className="flex items-center mr-2">
+          <div
+            onClick={() =>
+              setThemeState(themeState === "dark" ? "light" : "dark")
+            }
+            className={`relative w-12 h-6 flex items-center rounded-full cursor-pointer transition-colors duration-300 ${
+              themeState === "dark"
+                ? "bg-neutral-800 border border-white"
+                : "bg-gray-300 border border-black"
+            }`}
+          >
+            <div
+              className={`absolute w-5 h-5 rounded-full transition-transform duration-300 ${
+                themeState === "dark"
+                  ? "translate-x-[25px] bg-white"
+                  : "translate-x-0.5 bg-black"
+              }`}
+            />
+            <FaMoon className="absolute left-1 text-white text-sm" />
+            <IoIosSunny className="absolute right-1 text-yellow-500 text-sm" />
+          </div>
+        </div>
       </div>
 
       {renderAuthModal()}

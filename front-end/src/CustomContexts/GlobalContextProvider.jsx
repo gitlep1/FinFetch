@@ -1,21 +1,29 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 
-import { userContext, tokenContext, errorContext } from "./Contexts";
+import {
+  themeContext,
+  userContext,
+  tokenContext,
+  errorContext,
+} from "./Contexts";
 
 const GlobalContextProvider = ({ children }) => {
+  const [themeState, setThemeState] = useState("dark");
   const [authUser, setAuthUser] = useState(null);
   const [authToken, setAuthToken] = useState(null);
   const [error, setError] = useState("");
 
   return (
-    <userContext.Provider value={{ authUser, setAuthUser }}>
-      <tokenContext.Provider value={{ authToken, setAuthToken }}>
-        <errorContext.Provider value={{ error, setError }}>
-          {children}
-        </errorContext.Provider>
-      </tokenContext.Provider>
-    </userContext.Provider>
+    <themeContext.Provider value={{ themeState, setThemeState }}>
+      <userContext.Provider value={{ authUser, setAuthUser }}>
+        <tokenContext.Provider value={{ authToken, setAuthToken }}>
+          <errorContext.Provider value={{ error, setError }}>
+            {children}
+          </errorContext.Provider>
+        </tokenContext.Provider>
+      </userContext.Provider>
+    </themeContext.Provider>
   );
 };
 

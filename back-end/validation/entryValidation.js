@@ -24,7 +24,7 @@ const checkUserValues = (req, res, next) => {
 };
 
 const checkUserExtraEntries = (req, res, next) => {
-  const validFields = ["username", "password", "email"];
+  const validFields = ["username", "password", "email", "profileimg"];
   const keys = Object.keys(req.body);
 
   const extraFields = keys.filter((key) => !validFields.includes(key));

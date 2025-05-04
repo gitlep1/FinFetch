@@ -1,7 +1,8 @@
 import { createContext } from "react";
 
+const themeContext = createContext();
 const userContext = createContext();
 const tokenContext = createContext();
 const errorContext = createContext();
 
-export { userContext, tokenContext, errorContext };
+export { themeContext, userContext, tokenContext, errorContext };

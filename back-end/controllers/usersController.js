@@ -54,6 +54,7 @@ users.get(
           id: getAUser.id,
           profileimg: getAUser.profileimg,
           username: getAUser.username,
+          email: getAUser.email,
           theme: getAUser.theme,
           last_online: getAUser.last_online,
         };
@@ -188,19 +189,16 @@ users.put(
   async (req, res) => {
     const { token } = req.user;
     const decoded = jwt.decode(token);
-    const { profileimg, username, password, email, theme, last_online } =
-      req.body;
+    const { username, password, email } = req.body;
 
     try {
       const checkIfUserExists = await getUserByID(decoded.user.id);
 
       const updatedUserData = {
-        profileimg: profileimg || checkIfUserExists.profileimg,
         username: username || checkIfUserExists.username,
         password: password || checkIfUserExists.password,
         email: email || checkIfUserExists.email,
-        theme: theme || checkIfUserExists.theme,
-        last_online: last_online || checkIfUserExists.last_online,
+        last_online: new Date(),
       };
 
       const updatedUser = await updateUser(

@@ -12,6 +12,8 @@ const {
   deleteProfileImage,
 } = require("../queries/imageUploaderQueries");
 
+const { getUserByID, updateUser } = require("../queries/usersQueries");
+
 const {
   checkProfileImageValues,
   checkProfileImageExtraEntries,
@@ -72,10 +74,18 @@ images.post(
   requireAuth(),
   scopeAuth(["write:user"]),
   upload.single("image"),
-  checkProfileImageValues,
-  checkProfileImageExtraEntries,
   async (req, res) => {
+    const { token } = req.user;
+    const decoded = jwt.decode(token);
+
     try {
+      const checkIfUserExists = await getUserByID(decoded.user.id);
+
+      if (!checkIfUserExists) {
+        res.status(404).send("User not found");
+        return;
+      }
+
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
       }
@@ -84,16 +94,38 @@ images.post(
       const { image_url, delete_hash } = await uploadImageToImgur(fileBuffer);
 
       const newProfileImageData = {
-        user_id: req.body.user_id,
+        user_id: checkIfUserExists.user_id,
         image_url,
         delete_hash,
       };
+      console.log(
+        "=== POST image - newProfileImageData",
+        newProfileImageData,
+        "==="
+      );
 
       const createdProfileImage = await createProfileImage(newProfileImageData);
       console.log("=== POST new profile image", createdProfileImage, "===");
 
       if (createdProfileImage) {
-        res.status(200).json({ payload: createdProfileImage });
+        const updatedUser = {
+          profileimg: createdProfileImage.image_url,
+          username: checkIfUserExists.username,
+          password: checkIfUserExists.password,
+          email: checkIfUserExists.email,
+          last_online: new Date(),
+        };
+
+        const updatedUserResult = await updateUser(
+          checkIfUserExists.user_id,
+          updatedUser
+        );
+
+        if (updatedUserResult) {
+          res.status(200).json({ payload: updatedUserResult });
+        } else {
+          res.status(404).send("User profile image not updated");
+        }
       } else {
         res.status(404).send("Profile image not created");
       }

@@ -9,9 +9,11 @@ import DetectScreenSize from "./CustomFunctions/DetectScreenSize";
 import SmallResolution from "./CustomFunctions/SmallResolution/SmallResolution";
 
 import { EmailVerification } from "./components/Account/EmailVerification";
+import { AccountSettings } from "./components/Account/AccountSettings";
 import { Homepage } from "./components/Homepage/Homepage";
 import { Dashboard } from "./components/Dashboard/Dashboard";
 import { About } from "./components/About/About";
+import { NotFound } from "./components/NotFound";
 
 export const App = () => {
   const { setAuthUser } = useContext(userContext);
@@ -61,8 +63,10 @@ export const App = () => {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/email-verification" element={<EmailVerification />} />
+        <Route path="/account-settings" element={<AccountSettings />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/about" element={<About />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </section>
   );
