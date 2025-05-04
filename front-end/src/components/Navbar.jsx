@@ -89,9 +89,17 @@ export const Navbar = () => {
           <h1 className="text-2xl font-bold text-white">FinFetch</h1>
         </div>
         {userData ? (
-          <Button variant="danger" onClick={handleSignoutModalShow}>
-            Logout
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Image
+              src={userData.profileimg}
+              alt="User Avatar"
+              className="w-10 h-10 rounded-full"
+            />
+            <p className="text-white mt-2">{userData.username}</p>
+            <Button variant="danger" onClick={handleSignoutModalShow}>
+              Logout
+            </Button>
+          </div>
         ) : (
           <Button variant="success" onClick={handleAuthModalShow}>
             Login
