@@ -2,7 +2,7 @@
   "redirects": [
     {
       "source": "/(.*)", 
-      "destination": "front-end/index.html",
+      "destination": "/index.html",
       "statusCode": 200
     }
   ],
