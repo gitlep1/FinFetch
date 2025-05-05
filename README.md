@@ -2,11 +2,11 @@
 
 FinFetch is a sleek, responsive stock price dashboard built with **React**, **JavaScript**, and **Tailwind CSS**. It fetches real-time stock data from a free financial API and displays it in a clean, user-friendly table layout. FinFetch also includes a user authentication system for a personalized experience.
 
-![FinFetch Screenshot](./screenshot.png)
+![FinFetch Screenshot](./FinFetch-Dashboard.png)
 
 ## 🚀 Live Demo
 
-👉 [Live App](https://your-deployed-site.vercel.app)
+👉 [FinFetch Live App](https://fin-fetch.vercel.app)
 
 ---
 
@@ -14,7 +14,7 @@ FinFetch is a sleek, responsive stock price dashboard built with **React**, **Ja
 
 - **Frontend**: React + JavaScript
 - **Backend**: Node.js, express
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL, NeonDB
 - **Styling**: Tailwind CSS
 - **Data**: Free stock API Alpha Vantage
 - **Deployment**: Vercel
