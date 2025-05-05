@@ -14,7 +14,6 @@ const LeavingPage = async (token, navigate) => {
   };
 
   const handleEndPoint = async () => {
-    console.log("user left page");
     navigate("/");
   };
 

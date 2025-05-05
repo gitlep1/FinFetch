@@ -53,7 +53,6 @@ export const Signin = ({ handleSignUpClick, handleAuthModalClose }) => {
       })
       .catch((err) => {
         setError(err.response.data);
-        console.log(err.response.data);
         notify();
       })
       .finally(() => {
