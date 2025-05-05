@@ -53,6 +53,7 @@ export const Signin = ({ handleSignUpClick, handleAuthModalClose }) => {
       })
       .catch((err) => {
         setError(err.response.data);
+        console.log(err.response.data);
         notify();
       })
       .finally(() => {
@@ -61,7 +62,7 @@ export const Signin = ({ handleSignUpClick, handleAuthModalClose }) => {
   };
 
   const notify = (userData) => {
-    if (error === "user not found") {
+    if (error.includes("No user") || userData === undefined) {
       return toast.error(
         "No user with those credentials have been found. \n Please make sure your email and password are correct.",
         {
@@ -71,13 +72,6 @@ export const Signin = ({ handleSignUpClick, handleAuthModalClose }) => {
     } else if (error !== "") {
       return toast.error(
         `An error occurred while signing in: ${error} Please try again later.`,
-        {
-          containerId: "toast-notify",
-        }
-      );
-    } else if (userData === undefined) {
-      return toast.error(
-        "An error occurred while signing in. Please try again later.",
         {
           containerId: "toast-notify",
         }

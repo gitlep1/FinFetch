@@ -173,7 +173,7 @@ users.post("/signin", async (req, res) => {
         res.status(404).send(`Data for: ${checkUser.id} not found`);
       }
     } else {
-      res.status(404).send("user not found");
+      res.status(404).send("No user found");
     }
   } catch (error) {
     console.error("users.POST /signin", { error });
@@ -193,8 +193,10 @@ users.put(
 
     try {
       const checkIfUserExists = await getUserByID(decoded.user.id);
+      console.log("=== PUT user (checkIfUserExists)", checkIfUserExists, "===");
 
       const updatedUserData = {
+        profileimg: checkIfUserExists.profileimg,
         username: username || checkIfUserExists.username,
         password: password || checkIfUserExists.password,
         email: email || checkIfUserExists.email,

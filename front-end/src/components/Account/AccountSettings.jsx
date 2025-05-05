@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from "react";
 import { Form, Button, Modal, Image } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -11,8 +10,6 @@ import { Loading } from "../../CustomFunctions/Loading/Loading";
 const API = import.meta.env.VITE_PUBLIC_API_BASE;
 
 export const AccountSettings = () => {
-  const navigate = useNavigate();
-
   const { themeState } = useContext(themeContext);
 
   const tokenData = GetCookies("authToken") || null;
@@ -35,6 +32,11 @@ export const AccountSettings = () => {
       window.location.href = "/";
     }
     getUserData();
+
+    // const checkifAnyChangesInterval = setInterval(() => {
+    //   buttonDisabled();
+    // }, 1000);
+    // return () => clearInterval(checkifAnyChangesInterval);
   }, []); // eslint-disable-line
 
   const getUserData = async () => {
@@ -89,10 +91,11 @@ export const AccountSettings = () => {
         const expirationDate = new Date();
         expirationDate.setDate(expirationDate.getDate() + 30);
         SetCookies("authUser", response.data.payload, expirationDate);
-        notify();
+        notify("success");
       })
       .catch((error) => {
         setError(error.message);
+        notify("error");
       })
       .finally(() => {
         setIsLoading(false);
@@ -207,7 +210,6 @@ export const AccountSettings = () => {
             <Button
               variant="primary"
               onClick={() => {
-                // setShowModal(false);
                 uploadProfileImage();
               }}
             >
@@ -220,11 +222,21 @@ export const AccountSettings = () => {
 
         {isLoading ? <Loading message="Updating Profile Details..." /> : null}
 
-        <Button className="w-[100%]" variant="primary" type="submit">
-          Update
-        </Button>
+        {buttonDisabled() ? (
+          <Button className="w-[100%]" variant="secondary" disabled>
+            Update
+          </Button>
+        ) : (
+          <Button className="w-[100%]" variant="primary" type="submit">
+            Update
+          </Button>
+        )}
       </Form>
     );
+  };
+
+  const buttonDisabled = () => {
+    return username === "" && email === "" && password === "";
   };
 
   return (
