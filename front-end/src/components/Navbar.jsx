@@ -1,10 +1,10 @@
 import { useEffect, useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Image, Breadcrumb, Button, Modal, Form } from "react-bootstrap";
+import { Image, Breadcrumb, Button, Modal } from "react-bootstrap";
 import { IoIosSunny } from "react-icons/io";
 import { FaMoon } from "react-icons/fa";
 
-import { GetCookies } from "../CustomFunctions/HandleCookies";
+import { GetCookies, SetCookies } from "../CustomFunctions/HandleCookies";
 import { themeContext } from "../CustomContexts/Contexts";
 
 import Leon from "../assets/images/Leon.png";
@@ -93,6 +93,19 @@ export const Navbar = () => {
         </Modal.Body>
       </Modal>
     );
+  };
+
+  const handleThemeCookie = () => {
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + 365);
+
+    if (themeState === "dark") {
+      SetCookies("theme", "light", expirationDate);
+      setThemeState("light");
+    } else {
+      SetCookies("theme", "dark", expirationDate);
+      setThemeState("dark");
+    }
   };
 
   return (
@@ -226,9 +239,7 @@ export const Navbar = () => {
         </Breadcrumb>
         <div className="flex items-center mr-2">
           <div
-            onClick={() =>
-              setThemeState(themeState === "dark" ? "light" : "dark")
-            }
+            onClick={() => handleThemeCookie()}
             className={`relative w-12 h-6 flex items-center rounded-full cursor-pointer transition-colors duration-300 ${
               themeState === "dark"
                 ? "bg-neutral-800 border border-white"
