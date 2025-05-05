@@ -26,7 +26,7 @@ export const Homepage = () => {
 
   return (
     <div
-      className={`w-full min-h-screen ${
+      className={`min-w-screen min-h-screen ${
         themeState === "dark" ? "bg-white text-black" : "bg-gray-900 text-white"
       }`}
     >

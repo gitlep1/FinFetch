@@ -242,7 +242,7 @@ export const Dashboard = () => {
 
   return (
     <div
-      className={`p-6 min-h-screen ${
+      className={`p-6 min-h-screen min-w-screen ${
         themeState === "dark" ? "bg-white" : "bg-gray-900 text-white"
       } `}
     >

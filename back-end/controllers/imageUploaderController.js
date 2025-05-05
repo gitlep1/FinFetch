@@ -94,15 +94,10 @@ images.post(
       const { image_url, delete_hash } = await uploadImageToImgur(fileBuffer);
 
       const newProfileImageData = {
-        user_id: checkIfUserExists.user_id,
+        user_id: checkIfUserExists.id,
         image_url,
         delete_hash,
       };
-      console.log(
-        "=== POST image - newProfileImageData",
-        newProfileImageData,
-        "==="
-      );
 
       const createdProfileImage = await createProfileImage(newProfileImageData);
       console.log("=== POST new profile image", createdProfileImage, "===");
@@ -117,9 +112,10 @@ images.post(
         };
 
         const updatedUserResult = await updateUser(
-          checkIfUserExists.user_id,
+          checkIfUserExists.id,
           updatedUser
         );
+        console.log("=== PUT updated user", updatedUserResult, "===");
 
         if (updatedUserResult) {
           res.status(200).json({ payload: updatedUserResult });

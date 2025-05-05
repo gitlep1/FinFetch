@@ -99,7 +99,7 @@ export const Navbar = () => {
     <div>
       <nav
         className={`
-          w-full grid grid-cols-1 place-items-center 
+          min-w-screen grid grid-cols-1 place-items-center 
           gap-y-3 py-3 px-6
           sm:flex sm:flex-row sm:justify-between sm:items-center sm:h-20 sm:px-4
           md:flex md:flex-row md:justify-between md:items-center md:h-20 md:px-10
@@ -136,7 +136,7 @@ export const Navbar = () => {
         )}
       </nav>
       <div
-        className={`flex justify-between ${
+        className={`flex justify-between min-w-screen ${
           themeState === "dark" ? "bg-gray-900" : "bg-white"
         }`}
       >
@@ -181,26 +181,28 @@ export const Navbar = () => {
               Dashboard
             </span>
           </Breadcrumb.Item>
-          <Breadcrumb.Item
-            active={activeAccountSettings}
-            onClick={() => {
-              navigate("/account-settings");
-            }}
-          >
-            <span
-              className={`${
-                themeState === "dark"
-                  ? activeAccountSettings
-                    ? "text-red-600"
-                    : null
-                  : activeAccountSettings
-                  ? "text-green-600"
-                  : null
-              }`}
+          {userData ? (
+            <Breadcrumb.Item
+              active={activeAccountSettings}
+              onClick={() => {
+                navigate("/account-settings");
+              }}
             >
-              Account Settings
-            </span>
-          </Breadcrumb.Item>
+              <span
+                className={`${
+                  themeState === "dark"
+                    ? activeAccountSettings
+                      ? "text-red-600"
+                      : null
+                    : activeAccountSettings
+                    ? "text-green-600"
+                    : null
+                }`}
+              >
+                Account Settings
+              </span>
+            </Breadcrumb.Item>
+          ) : null}
           <Breadcrumb.Item
             active={activeAbout}
             onClick={() => {

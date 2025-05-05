@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Form, Button, Modal, Image } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -10,6 +11,8 @@ import { Loading } from "../../CustomFunctions/Loading/Loading";
 const API = import.meta.env.VITE_PUBLIC_API_BASE;
 
 export const AccountSettings = () => {
+  const navigate = useNavigate();
+
   const { themeState } = useContext(themeContext);
 
   const tokenData = GetCookies("authToken") || null;
@@ -74,6 +77,7 @@ export const AccountSettings = () => {
     };
 
     setIsLoading(true);
+    setError("");
 
     await axios
       .put(`${API}/users/update`, updatedUserData, {
@@ -97,13 +101,10 @@ export const AccountSettings = () => {
 
   const uploadProfileImage = async () => {
     setIsLoading(true);
+    setError("");
 
     const formData = new FormData();
     formData.append("image", profileimg);
-
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
 
     await axios
       .post(`${API}/images/upload`, formData, {
@@ -112,26 +113,33 @@ export const AccountSettings = () => {
         },
       })
       .then((res) => {
-        console.log("uploadProfileImage -> res.data", res.data.payload);
-        // const expirationDate = new Date();
-        // expirationDate.setDate(expirationDate.getDate() + 30);
-        // SetCookies("authUser", res.data.payload, expirationDate);
-        // notify();
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + 30);
+        SetCookies("authUser", res.data.payload, expirationDate);
+        notify("success");
       })
       .catch((error) => {
         setError(error.message);
+        notify("error");
       })
       .finally(() => {
         setIsLoading(false);
       });
   };
 
-  const notify = () => {
-    toast.success("Account updated successfully", {
-      containerId: "toast-notify",
-    });
-    setTimeout(() => {
+  const notify = (result) => {
+    if (result === "error") {
+      return toast.error(`ERROR: ${error}`, {
+        containerId: "toast-notify",
+      });
+    } else if (result === "success") {
+      toast.success(`Account updated successfully`, {
+        containerId: "toast-notify",
+      });
+    }
+    return setTimeout(() => {
       window.location.reload();
+      setShowModal(false);
     }, 2000);
   };
 
@@ -210,8 +218,6 @@ export const AccountSettings = () => {
           </Modal.Footer>
         </Modal>
 
-        {error && <p>{error}</p>}
-
         {isLoading ? <Loading message="Updating Profile Details..." /> : null}
 
         <Button className="w-[100%]" variant="primary" type="submit">
@@ -223,7 +229,7 @@ export const AccountSettings = () => {
 
   return (
     <div
-      className={`w-full min-h-screen flex flex-col gap-y-6 items-center justify-center p-6 ${
+      className={`min-w-screen min-h-screen flex flex-col gap-y-6 items-center justify-center p-6 ${
         themeState === "dark" ? "bg-white text-black" : "bg-gray-900 text-white"
       }`}
     >
