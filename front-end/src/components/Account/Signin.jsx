@@ -1,5 +1,4 @@
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -12,8 +11,6 @@ import { Loading } from "../../CustomFunctions/Loading/Loading";
 const API = import.meta.env.VITE_PUBLIC_API_BASE;
 
 export const Signin = ({ handleSignUpClick, handleAuthModalClose }) => {
-  const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
