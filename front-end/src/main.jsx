@@ -9,11 +9,9 @@ import "react-loading-skeleton/dist/skeleton.css";
 import "./main.css";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <BrowserRouter>
-      <GlobalContextProvider>
-        <App />
-      </GlobalContextProvider>
-    </BrowserRouter>
-  </StrictMode>
+  <BrowserRouter>
+    <GlobalContextProvider>
+      <App />
+    </GlobalContextProvider>
+  </BrowserRouter>
 );

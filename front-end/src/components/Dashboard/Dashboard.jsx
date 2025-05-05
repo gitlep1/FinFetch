@@ -1,5 +1,7 @@
 import { useEffect, useState, useContext } from "react";
+import { toast } from "react-toastify";
 import { fetchStockData } from "./fetchStockData";
+import Fuse from "fuse.js";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -25,19 +27,45 @@ import { themeContext } from "../../CustomContexts/Contexts";
 const STOCK_SYMBOLS = ["AAPL", "MSFT", "GOOGL", "TSLA", "AMZN", "META", "NFLX"];
 
 const mockStockData = [
-  { name: "AAPL", price: 172.3, changePercent: 1.12 },
-  { name: "MSFT", price: 324.1, changePercent: -0.45 },
-  { name: "GOOGL", price: 138.7, changePercent: 0.98 },
-  { name: "TSLA", price: 237.6, changePercent: -1.53 },
-  { name: "AMZN", price: 123.9, changePercent: 0.75 },
-  { name: "META", price: 298.2, changePercent: 1.42 },
-  { name: "NFLX", price: 405.6, changePercent: -0.67 },
+  { name: "AAPL", fullName: "Apple Inc.", price: 172.3, changePercent: 1.12 },
+  {
+    name: "MSFT",
+    fullName: "Microsoft Corporation",
+    price: 324.1,
+    changePercent: -0.45,
+  },
+  {
+    name: "GOOGL",
+    fullName: "Alphabet Inc.",
+    price: 138.7,
+    changePercent: 0.98,
+  },
+  { name: "TSLA", fullName: "Tesla, Inc.", price: 237.6, changePercent: -1.53 },
+  {
+    name: "AMZN",
+    fullName: "Amazon.com, Inc.",
+    price: 123.9,
+    changePercent: 0.75,
+  },
+  {
+    name: "META",
+    fullName: "Meta Platforms, Inc.",
+    price: 298.2,
+    changePercent: 1.42,
+  },
+  {
+    name: "NFLX",
+    fullName: "Netflix, Inc.",
+    price: 405.6,
+    changePercent: -0.67,
+  },
 ];
 
 export const Dashboard = () => {
   const { themeState } = useContext(themeContext);
 
   const [stockData, setStockData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -54,12 +82,41 @@ export const Dashboard = () => {
           STOCK_SYMBOLS.map((symbol) => fetchStockData(symbol))
         );
 
-        const hasValidData = results.every((item) => item && item.price);
+        const checkAV = results.some(
+          (result) => result.source === "AlphaVantage"
+        );
+
+        const checkFH = results.some((result) => result.source === "Finnhub");
+
+        if (!checkAV) {
+          toast.error(
+            "API rate limit reached for AlphaVantage. Fetching from Finnhub.",
+            {
+              containerId: "general-toast",
+            }
+          );
+        }
+
+        if (!checkFH) {
+          toast.error(
+            "API rate limit reached for Finnhub. Showing mock data.",
+            {
+              containerId: "general-toast",
+            }
+          );
+        }
+
+        if (!checkAV && !checkFH) {
+          return setStockData(mockStockData);
+        }
+
+        const hasValidData = results.every(
+          (item) => item && item.price !== undefined
+        );
         setStockData(hasValidData ? results : mockStockData);
       } catch (err) {
-        console.error("Fetch error:", err);
         setStockData(mockStockData);
-        setError("Failed to load live stock data. Showing mock data.");
+        setError("Failed to load live stock data. Showing mock data.", err);
       } finally {
         setLoading(false);
       }
@@ -79,7 +136,14 @@ export const Dashboard = () => {
     return 0;
   });
 
-  const displayData = sortedData;
+  const fuse = new Fuse(sortedData, {
+    keys: ["name", "fullName"],
+    threshold: 0.4,
+  });
+
+  const displayData = searchQuery
+    ? fuse.search(searchQuery).map((result) => result.item)
+    : sortedData;
 
   const handleSort = (field) => {
     if (sortField === field) {
@@ -246,9 +310,21 @@ export const Dashboard = () => {
         themeState === "dark" ? "bg-white" : "bg-gray-900 text-white"
       } `}
     >
-      <h1 className="text-2xl font-bold mb-4">
-        {stockData.length > 1 ? "Stock Dashboard" : "Mock Dashboard"}
-      </h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold">
+          {stockData.length > 1 ? "Stock Dashboard" : "Mock Dashboard"}
+        </h1>
+        <input
+          type="text"
+          placeholder="Search stock..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className={`w-50 py-1 rounded-md border border-gray-300 ${
+            themeState === "dark" ? "text-black" : "text-white"
+          }`}
+        />
+      </div>
+
       {renderStockTable()}
     </div>
   );
