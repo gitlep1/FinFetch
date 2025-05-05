@@ -6,7 +6,7 @@ FinFetch is a sleek, responsive stock price dashboard built with **React**, **Ja
 
 ## 🚀 Live Demo
 
-👉 <a href="https://fin-fetch.vercel.app" target="_blank" rel="noopener noreferrer">FinFetch Live App</a>
+👉 [FinFetch Live App](https://fin-fetch.vercel.app)
 
 ---
 
